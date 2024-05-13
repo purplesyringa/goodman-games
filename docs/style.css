@@ -83,9 +83,6 @@ blockquote cite {
 h1 {
 	color: var(--accent-color);
 }
-.kind-topic h1 {
-	margin-left: 16px;
-}
 h1 .back {
 	display: inline-block;
 	color: var(--unimportant-color);

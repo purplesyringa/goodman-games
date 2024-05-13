@@ -1,3 +1,5 @@
+const BASE = "https://goodman-games.com/forums/";
+
 function $(template, ...args) {
 	let html = template[0];
 	for (let i = 0; i < args.length; i++) {
@@ -11,8 +13,26 @@ function $(template, ...args) {
 	const node = document.createElement("div");
 	node.innerHTML = html.trim();
 	for (const link of node.querySelectorAll("a")) {
+		if (link.href.startsWith(BASE + "viewforum.php")) {
+			const match = link.href.match(/viewforum\.php\?f=(\d+)/);
+			if (match) {
+				link.setAttribute("href", `?f${match[1]}`);
+				if (link.textContent.startsWith(BASE)) {
+					link.textContent = link.href;
+				}
+			}
+		}
+		if (link.href.startsWith(BASE + "viewtopic.php")) {
+			const match = link.href.match(/viewtopic\.php\?f=(\d+)&t=(\d+)(?:#p(\d+))?/);
+			if (match) {
+				link.setAttribute("href", `?f${match[1]}t${match[2]}` + (match[3] ? `#post${match[3]}` : ""));
+				if (link.textContent.startsWith(BASE)) {
+					link.textContent = link.href;
+				}
+			}
+		}
 		if ((link.getAttribute("href") || "").startsWith("?")) {
-			link.addEventListener("click", e => {
+			link.addEventListener("click", async e => {
 				let href = link.href;
 				if (href.endsWith("?")) {
 					href = href.slice(0, -1);
@@ -67,6 +87,13 @@ async function updatePage() {
 
 	const key = location.search ? location.search.slice(1).split("/")[0] : "root";
 	await renderKey(key, true);
+
+	if (location.hash) {
+		const node = document.getElementById(location.hash.slice(1));
+		if (node) {
+			node.scrollIntoView();
+		}
+	}
 }
 
 function formatDateTime(datetime) {
