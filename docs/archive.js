@@ -19,6 +19,7 @@ function $(template, ...args) {
 				}
 				e.preventDefault();
 				history.pushState(null, "", href);
+				document.documentElement.scrollTop = 0;
 				updatePage();
 			});
 		}
